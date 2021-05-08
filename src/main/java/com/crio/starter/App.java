@@ -17,11 +17,13 @@ public class App {
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
   }
+
   @Bean // Want a new obj every time
   @Scope("prototype")
   public ModelMapper modelMapper() {
     return new ModelMapper();
   }
+  
   @Bean
   @Scope("prototype")
   public ObjectMapper objectMapper() {

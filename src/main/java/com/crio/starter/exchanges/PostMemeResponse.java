@@ -9,6 +9,6 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class PostMemeResponse {
-    @NonNull
-    private String id;
+  @NonNull
+  private String id;
 }
