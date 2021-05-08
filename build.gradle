@@ -61,6 +61,7 @@ spotbugsTest {
 
 jacoco {
     toolVersion = "0.8.4"
+    
 }
 
 jacocoTestReport {
