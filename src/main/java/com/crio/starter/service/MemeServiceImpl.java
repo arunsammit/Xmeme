@@ -4,6 +4,8 @@ import com.crio.starter.exchanges.PostMemeRequest;
 import com.crio.starter.exchanges.PostMemeResponse;
 import com.crio.starter.model.Meme;
 import com.crio.starter.repositoryservice.RepositoryService;
+
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,12 @@ public class MemeServiceImpl implements MemeService {
     repositoryService.saveMeme(meme);
     PostMemeResponse postMemeResponse = new PostMemeResponse(id.toString());
     return postMemeResponse;
+  }
+
+  @Override
+  public List<Meme> getLatestMemes() {
+    // TODO Auto-generated method stub
+    return null;
   }
   
 }
