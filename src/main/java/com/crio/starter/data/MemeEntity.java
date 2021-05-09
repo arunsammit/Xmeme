@@ -1,9 +1,7 @@
 package com.crio.starter.data;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,11 +27,9 @@ public class MemeEntity {
   @NonNull
   private String caption;
   @NonNull
-  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape = JsonFormat.Shape.STRING)
   private LocalDateTime dateTime;
 
-  void setDateTime(String dateTime){
+  void setDateTime(String dateTime) {
     this.dateTime = LocalDateTime.parse(dateTime);
   }
-
 }

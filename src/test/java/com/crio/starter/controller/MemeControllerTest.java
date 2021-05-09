@@ -1,6 +1,5 @@
 package com.crio.starter.controller;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -94,7 +93,7 @@ class MemeControllerTest {
     Mockito.verify(memeService).getLatestMemes(100);
   }
 
-  List<GetMemeResponse> loadMemesResponse() throws IOException{
+  List<GetMemeResponse> loadMemesResponse() throws IOException {
     String fixture =
         FixtureHelpers.fixture(FIXTURES + "/memes_response.json");
 

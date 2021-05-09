@@ -3,11 +3,6 @@ package com.crio.starter.repositoryservice;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.crio.starter.App;
 import com.crio.starter.data.MemeEntity;
 import com.crio.starter.model.Meme;
@@ -17,7 +12,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,13 +48,13 @@ public class RepositoryServiceTest {
   private ModelMapper modelMapper;
 
   @BeforeEach
-  void setup() throws IOException{
+  void setup() throws IOException {
     List<MemeEntity> entities = listOfMemeEntity();
     entities.forEach(x -> mongoTemplate.save(x));
   }
 
   @AfterEach
-  void teardown() throws IOException{
+  void teardown() throws IOException {
     mongoTemplate.dropCollection("meme");
   }
   
@@ -67,7 +65,7 @@ public class RepositoryServiceTest {
   }
 
   @Test
-  void getRecentMemesTest() throws IOException{
+  void getRecentMemesTest() throws IOException {
     List<Meme> memes = 
         listOfMemeEntity().stream()
         .map(x -> modelMapper.map(x,Meme.class))

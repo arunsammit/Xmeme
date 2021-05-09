@@ -13,13 +13,17 @@ import java.util.List;
 public class GenerateData {
   static ObjectMapper mapper = new ObjectMapper();
 
-
+  /**Main method to generate the json MemeEntity file for testing. 
+   * 
+   * @param args args
+   * @throws IOException exception
+   */
   public static void main(String[] args) throws IOException {
     mapper.registerModule(new JavaTimeModule());
     mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     List<MemeEntity> memeEntityList = new ArrayList<>();
     File file = new File("src/test/resources/fixtures/exchanges/initial_list_of_meme_entity.json");
-    for (int i = 0;i < 150; i++){
+    for (int i = 0;i < 150; i++) {
       MemeEntity memeEntity = new MemeEntity(i + "200",
           i + "",
           "erwin_" + i,
