@@ -75,4 +75,13 @@ public class RepositoryServiceTest {
     List<Meme> memesActual = repositoryService.getRecentMemes(10);
     assertEquals(memesExpected, memesActual);
   }
+
+  @Test
+  void saveMemeTest() {
+    //TODO: implement test for saveMeme method
+  }
+  
+  void getMemeByIdTest() {
+    //TODO: implement test for getMemeById method
+  }
 }

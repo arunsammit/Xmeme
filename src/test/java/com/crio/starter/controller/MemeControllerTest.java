@@ -93,6 +93,11 @@ class MemeControllerTest {
     Mockito.verify(memeService).getLatestMemes(100);
   }
 
+  @Test
+  void getMemeByIdTest() {
+    //TODO: Implement this test
+  }
+
   List<GetMemeResponse> loadMemesResponse() throws IOException {
     String fixture =
         FixtureHelpers.fixture(FIXTURES + "/memes_response.json");

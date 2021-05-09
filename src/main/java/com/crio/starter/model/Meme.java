@@ -29,7 +29,11 @@ public class Meme {
     this.dateTime = LocalDateTime.parse(dateTime);
   }
 
-  public void setLocalDateTime(LocalDateTime dateTime) {
+  public void setDateTime(LocalDateTime dateTime) {
     this.dateTime = dateTime;
+  }
+
+  public LocalDateTime getDateTime() {
+    return dateTime;
   }
 }

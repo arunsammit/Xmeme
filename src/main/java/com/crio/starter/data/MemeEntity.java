@@ -29,7 +29,15 @@ public class MemeEntity {
   @NonNull
   private LocalDateTime dateTime;
 
-  void setDateTime(String dateTime) {
+  public void setDateTime(String dateTime) {
     this.dateTime = LocalDateTime.parse(dateTime);
+  }
+
+  public void setDateTime(LocalDateTime dateTime) {
+    this.dateTime = dateTime;
+  }
+
+  public LocalDateTime getDateTime() {
+    return dateTime;
   }
 }

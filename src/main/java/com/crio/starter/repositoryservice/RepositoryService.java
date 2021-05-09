@@ -9,4 +9,6 @@ public interface RepositoryService {
   void saveMeme(Meme meme);
 
   List<Meme> getRecentMemes(int maxCnt);
+
+  Meme getMemeById(String id);
 }

@@ -13,4 +13,6 @@ public interface MemeService {
   public PostMemeResponse postMeme(PostMemeRequest postMemeRequest, LocalDateTime dateTime);
   
   public List<GetMemeResponse> getLatestMemes(int memeCnt);
+
+  public GetMemeResponse getMemeById(String id);
 }

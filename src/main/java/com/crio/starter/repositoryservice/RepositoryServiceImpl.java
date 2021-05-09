@@ -33,5 +33,13 @@ public class RepositoryServiceImpl implements RepositoryService {
         .collect(Collectors.toList());
     return memeList;
   }
+
+  @Override
+  public Meme getMemeById(String id) {
+    MemeEntity memeEntity = 
+        memeRepository.findOneByMemeId(id);
+    Meme meme = modelMapper.map(memeEntity, Meme.class);
+    return meme;
+  }
     
 }

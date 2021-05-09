@@ -4,6 +4,7 @@ import com.crio.starter.exchanges.GetMemeResponse;
 import com.crio.starter.exchanges.PostMemeRequest;
 import com.crio.starter.exchanges.PostMemeResponse;
 import com.crio.starter.model.Meme;
+import com.crio.starter.repository.MemeRepository;
 import com.crio.starter.repositoryservice.RepositoryService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +35,7 @@ public class MemeServiceImpl implements MemeService {
     UUID id = UUID.randomUUID();
     Meme meme = modelMapper.map(postMemeRequest, Meme.class);
     meme.setMemeId(id.toString());
-    meme.setLocalDateTime(dateTime);
+    meme.setDateTime(dateTime);
     repositoryService.saveMeme(meme);
     PostMemeResponse postMemeResponse = new PostMemeResponse(id.toString());
     return postMemeResponse;
@@ -48,6 +49,13 @@ public class MemeServiceImpl implements MemeService {
         .collect(Collectors.toList());
 
     return memeResponses;
+  }
+
+  @Override
+  public GetMemeResponse getMemeById(String id) {
+    Meme meme = repositoryService.getMemeById(id);
+    GetMemeResponse memeResponse = modelMapper.map(meme, GetMemeResponse.class);
+    return memeResponse;
   }
   
 }

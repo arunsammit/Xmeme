@@ -76,6 +76,10 @@ class MemeServiceTest {
     assertEquals(expected, response);
   }
 
+  void getMemeByIdTest() {
+    //TODO: implement test for getMemeById
+  }
+
   private List<Meme> listOfMeme() throws IOException {
     String fixture =
         FixtureHelpers.fixture(FIXTURES + "/meme_list.json");
