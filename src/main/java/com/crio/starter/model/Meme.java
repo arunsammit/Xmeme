@@ -2,6 +2,7 @@ package com.crio.starter.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Meme {
-  @JsonProperty("id")
   private String memeId;
   private String name;
   private String url;
   private String caption;
+  private LocalDateTime dateTime;
+
+  // String getDateTime(){
+  //   return dateTime.toString();
+  // }
+
+  // void setDateTime(String dateTimeString){
+  //   dateTime = LocalDateTime.parse(dateTimeString);
+  // }
 }
