@@ -8,10 +8,7 @@ import com.crio.starter.repositoryservice.RepositoryService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +34,7 @@ public class MemeServiceImpl implements MemeService {
     UUID id = UUID.randomUUID();
     Meme meme = modelMapper.map(postMemeRequest, Meme.class);
     meme.setMemeId(id.toString());
-    meme.setDateTime(dateTime);
+    meme.setLocalDateTime(dateTime);
     repositoryService.saveMeme(meme);
     PostMemeResponse postMemeResponse = new PostMemeResponse(id.toString());
     return postMemeResponse;
@@ -45,7 +42,6 @@ public class MemeServiceImpl implements MemeService {
 
   @Override
   public List<GetMemeResponse> getLatestMemes(int memeCnt) {
-    // XXX Auto-generated method stub
     List<Meme> memes = repositoryService.getRecentMemes(memeCnt);
     List<GetMemeResponse> memeResponses = memes.stream()
         .map(x -> modelMapper.map(x, GetMemeResponse.class))

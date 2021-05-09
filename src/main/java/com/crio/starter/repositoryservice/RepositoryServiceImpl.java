@@ -26,7 +26,6 @@ public class RepositoryServiceImpl implements RepositoryService {
 
   @Override
   public List<Meme> getRecentMemes(int maxCnt) {
-    // XXX To Test
     Page<MemeEntity> memePage = 
         memeRepository.findAll(PageRequest.of(0,maxCnt,Sort.Direction.DESC,"dateTime"));
     List<Meme> memeList = memePage.stream().map(

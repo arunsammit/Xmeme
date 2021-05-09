@@ -25,4 +25,11 @@ public class Meme {
   // void setDateTime(String dateTimeString){
   //   dateTime = LocalDateTime.parse(dateTimeString);
   // }
+  public void setDateTime(String dateTime) {
+    this.dateTime = LocalDateTime.parse(dateTime);
+  }
+
+  public void setLocalDateTime(LocalDateTime dateTime) {
+    this.dateTime = dateTime;
+  }
 }

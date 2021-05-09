@@ -1,22 +1,25 @@
 package com.crio.starter.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 
-import com.crio.starter.App;
+import com.crio.starter.exchanges.GetMemeResponse;
 import com.crio.starter.exchanges.PostMemeRequest;
 import com.crio.starter.exchanges.PostMemeResponse;
 import com.crio.starter.model.Meme;
 import com.crio.starter.repositoryservice.RepositoryService;
+import com.crio.starter.utils.FixtureHelpers;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +31,13 @@ import org.springframework.test.annotation.DirtiesContext;
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 @DirtiesContext
 class MemeServiceTest {
-
+  private static final String FIXTURES = "fixtures/exchanges";
   @MockBean
   private RepositoryService repositoryService;
   @Autowired
   private MemeService memeService;
+  @Autowired
+  private ObjectMapper objectMapper;
 
   @Test
   void postMemeTest() throws MalformedURLException {
@@ -57,8 +62,29 @@ class MemeServiceTest {
   }
 
   @Test
-  void getLatestMemesTest(){
-    //TODO: Test MemeServiceImpl::getLatestMemes method
+  void getLatestMemesTest() throws IOException {
+    //given
+    int memeCnt = 10;
+    List<Meme> memes = listOfMeme();
+    Mockito.doReturn(memes).when(repositoryService).getRecentMemes(anyInt());
+    //when
+    List<GetMemeResponse> response = 
+        memeService.getLatestMemes(memeCnt);
+    //then
+    List<GetMemeResponse> expected =
+        listOfGetMemeRespone();
+    assertEquals(expected, response);
+  }
 
+  private List<Meme> listOfMeme() throws IOException {
+    String fixture =
+        FixtureHelpers.fixture(FIXTURES + "/meme_list.json");
+    return objectMapper.readValue(fixture, new TypeReference<List<Meme>>(){});
+  }
+
+  private List<GetMemeResponse> listOfGetMemeRespone() throws IOException {
+    String fixture =
+        FixtureHelpers.fixture(FIXTURES + "/get_meme_response_list.json");
+    return objectMapper.readValue(fixture, new TypeReference<List<GetMemeResponse>>(){});
   }
 }

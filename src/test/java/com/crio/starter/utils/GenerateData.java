@@ -27,7 +27,7 @@ public class GenerateData {
       MemeEntity memeEntity = new MemeEntity(i + "200",
           i + "",
           "erwin_" + i,
-          "http://falcon.fly/img" + i + ",jpg",
+          "http://falcon.fly/img" + i + ".jpg",
           "attack on titan " + i,
           LocalDateTime.of(1800 + i, i % 12 + 1, i % 28 + 1, 18, 00,00));
       memeEntityList.add(memeEntity);
