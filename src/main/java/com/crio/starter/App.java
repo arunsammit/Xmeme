@@ -36,7 +36,6 @@ public class App {
   public ObjectMapper objectMapper() {
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JavaTimeModule());
-    // mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    return new ObjectMapper();
+    return mapper;
   }
 }

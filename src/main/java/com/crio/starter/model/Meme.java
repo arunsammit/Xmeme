@@ -17,23 +17,4 @@ public class Meme {
   private String url;
   private String caption;
   private LocalDateTime dateTime;
-
-  // String getDateTime(){
-  //   return dateTime.toString();
-  // }
-
-  // void setDateTime(String dateTimeString){
-  //   dateTime = LocalDateTime.parse(dateTimeString);
-  // }
-  public void setDateTime(String dateTime) {
-    this.dateTime = LocalDateTime.parse(dateTime);
-  }
-
-  public void setDateTime(LocalDateTime dateTime) {
-    this.dateTime = dateTime;
-  }
-
-  public LocalDateTime getDateTime() {
-    return dateTime;
-  }
 }

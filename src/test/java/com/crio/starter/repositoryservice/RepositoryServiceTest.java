@@ -2,6 +2,7 @@ package com.crio.starter.repositoryservice;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 
 import com.crio.starter.App;
 import com.crio.starter.data.MemeEntity;
@@ -13,13 +14,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +50,8 @@ public class RepositoryServiceTest {
   private ObjectMapper objectMapper;
   @Autowired
   private ModelMapper modelMapper;
+  @Autowired
+  private MemeRepository memeRepository;
 
   @BeforeEach
   void setup() throws IOException {
@@ -64,6 +70,12 @@ public class RepositoryServiceTest {
     return objectMapper.readValue(fixture, new TypeReference<List<MemeEntity>>(){});
   }
 
+  private List<Meme> listOfMeme() throws IOException {
+    String fixture =
+        FixtureHelpers.fixture(FIXTURES + "/meme_list.json");
+    return objectMapper.readValue(fixture, new TypeReference<List<Meme>>(){});
+  }
+
   @Test
   void getRecentMemesTest() throws IOException {
     List<Meme> memes = 
@@ -77,8 +89,23 @@ public class RepositoryServiceTest {
   }
 
   @Test
-  void saveMemeTest() {
+  void saveMemeTest() throws IOException {
     //TODO: implement test for saveMeme method
+    //given
+    UUID id = UUID.randomUUID();
+    Meme expected = new Meme(id.toString(),"madan",
+        "http://flt.falt/p.jpg",
+        "he he he", 
+        LocalDateTime.of(1800, 11, 13, 12, 00, 00));
+    //when
+    repositoryService.saveMeme(expected);
+    //then
+    MemeEntity actual = memeRepository.findOneByMemeId(id.toString());
+    assertEquals(expected.getMemeId(),actual.getMemeId());
+    assertEquals(expected.getName(),actual.getName());
+    assertEquals(expected.getUrl(),actual.getUrl());
+    assertEquals(expected.getCaption(),actual.getCaption());
+    assertEquals(expected.getDateTime(),actual.getDateTime());
   }
   
   void getMemeByIdTest() {

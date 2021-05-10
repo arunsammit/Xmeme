@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,8 @@ public class GenerateData {
    */
   public static void main(String[] args) throws IOException {
     mapper.registerModule(new JavaTimeModule());
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+    mapper.setDateFormat(df);
     List<MemeEntity> memeEntityList = new ArrayList<>();
     File file = new File("src/test/resources/fixtures/exchanges/initial_list_of_meme_entity.json");
     for (int i = 0;i < 150; i++) {

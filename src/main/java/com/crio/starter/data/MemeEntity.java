@@ -28,16 +28,4 @@ public class MemeEntity {
   private String caption;
   @NonNull
   private LocalDateTime dateTime;
-
-  public void setDateTime(String dateTime) {
-    this.dateTime = LocalDateTime.parse(dateTime);
-  }
-
-  public void setDateTime(LocalDateTime dateTime) {
-    this.dateTime = dateTime;
-  }
-
-  public LocalDateTime getDateTime() {
-    return dateTime;
-  }
 }
