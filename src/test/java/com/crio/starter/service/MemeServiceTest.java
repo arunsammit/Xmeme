@@ -2,10 +2,12 @@ package com.crio.starter.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 
+import com.crio.starter.exceptions.DublicateMemeException;
 import com.crio.starter.exceptions.MemeNotFoundException;
 import com.crio.starter.exchanges.GetMemeResponse;
 import com.crio.starter.exchanges.PostMemeRequest;
@@ -21,7 +23,6 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.ArgumentCaptor;
@@ -46,13 +47,14 @@ class MemeServiceTest {
   private ObjectMapper objectMapper;
 
   @Test
-  void postMemeTest() throws MalformedURLException {
+  void postMemeTest() throws Exception {
     //Given
     String name = "ram";
     URL url = new URL("http://falcon.fly/wings.jpg");
     String caption = "wings of freedom";
     LocalDateTime dateTime = LocalDateTime.of(1999,2,3,18,0);
     PostMemeRequest memeRequest = new PostMemeRequest(name,url,caption);
+    Mockito.doReturn(false).when(repositoryService).memeExists(any());
     //When
     ArgumentCaptor<Meme> valueCapture = ArgumentCaptor.forClass(Meme.class);
     final PostMemeResponse memeResponse = memeService.postMeme(memeRequest,dateTime);
@@ -65,6 +67,24 @@ class MemeServiceTest {
     assertEquals(caption, meme.getCaption());
     assertEquals(dateTime, meme.getDateTime());
     assertEquals(expected, memeResponse);
+  }
+
+  @Test
+  void postMemeThrowsExceptionDublicateMeme() throws Exception {
+    //Given
+    String name = "ram";
+    URL url = new URL("http://falcon.fly/wings.jpg");
+    String caption = "wings of freedom";
+    LocalDateTime dateTime = LocalDateTime.of(1999,2,3,18,0);
+    Meme meme = new Meme(null, name, url.toString(), caption, null);
+    PostMemeRequest memeRequest = new PostMemeRequest(name,url,caption);
+    Mockito.doReturn(true).when(repositoryService).memeExists(meme);
+    //when
+    Executable ex = () -> {
+      memeService.postMeme(memeRequest, dateTime);
+    };
+    //then
+    assertThrows(DublicateMemeException.class, ex);
   }
 
   @Test
@@ -83,7 +103,7 @@ class MemeServiceTest {
   }
 
   @Test
-  void getMemeByIdTest() {
+  void getMemeByIdTest() throws MemeNotFoundException {
     //given
     UUID id = UUID.randomUUID();
     Meme expected = new Meme(id.toString(),"madan",
@@ -104,7 +124,7 @@ class MemeServiceTest {
   }
 
   @Test
-  void getMemeByIdOnNullResponse() {
+  void getMemeByIdOnNullResponse() throws MemeNotFoundException {
     //TODO
     //given 
     Mockito.doReturn(null).when(repositoryService).getMemeById(anyString());

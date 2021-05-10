@@ -2,11 +2,14 @@ package com.crio.starter.repositoryservice;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 
 import com.crio.starter.App;
 import com.crio.starter.data.MemeEntity;
+import com.crio.starter.exceptions.DublicateMemeException;
 import com.crio.starter.exceptions.MemeNotFoundException;
 import com.crio.starter.model.Meme;
 import com.crio.starter.repository.MemeRepository;
@@ -92,5 +95,17 @@ public class RepositoryServiceTestWithFake {
         repositoryService.getMemeById("0"));
   }
 
+  @Test
+  void memeExistsTest() throws Exception {
+    MemeEntity memeEntity = 
+        listOfMemeEntity().get(0);
+    Meme meme = modelMapper.map(memeEntity,Meme.class);
+    assertTrue(repositoryService.memeExists(meme));
+    meme.setMemeId(null);
+    meme.setDateTime(null);
+    assertTrue(repositoryService.memeExists(meme));
+    meme.setMemeId("invalid_id");
+    assertFalse(repositoryService.memeExists(meme));
+  }
 
 }

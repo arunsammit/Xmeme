@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface MemeRepository extends MongoRepository<MemeEntity, String> {
   
   MemeEntity findOneByMemeId(String memeId);
-  
-  long deleteOneByMemeId(String lastname);
+
+  long deleteOneByMemeId(String memeId);
+
+  long countByMemeId(String memeId);
 }

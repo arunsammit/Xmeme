@@ -4,15 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 
+import com.crio.starter.App;
+import com.crio.starter.data.MemeEntity;
+import com.crio.starter.exceptions.DublicateMemeException;
+import com.crio.starter.exceptions.MemeNotFoundException;
+import com.crio.starter.model.Meme;
+import com.crio.starter.repository.MemeRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import com.crio.starter.App;
-import com.crio.starter.data.MemeEntity;
-import com.crio.starter.model.Meme;
-import com.crio.starter.repository.MemeRepository;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -35,7 +35,7 @@ public class RepositoryServiceTestWithMock {
   @Autowired RepositoryService repositoryService;
 
   @Test
-  void saveMemeTest() throws IOException {
+  void saveMemeTest() throws Exception {
     //given
     UUID id = UUID.randomUUID();
     Meme expected = new Meme(id.toString(),"madan",
@@ -58,7 +58,7 @@ public class RepositoryServiceTestWithMock {
   }
 
   @Test
-  void getMemeByIdTest() {
+  void getMemeByIdTest() throws MemeNotFoundException {
     //given
     UUID id = UUID.randomUUID();
     MemeEntity expected = new MemeEntity(id.toString(),

@@ -1,5 +1,6 @@
 package com.crio.starter.service;
 
+import com.crio.starter.exceptions.DublicateMemeException;
 import com.crio.starter.exceptions.MemeNotFoundException;
 import com.crio.starter.exchanges.GetMemeResponse;
 import com.crio.starter.exchanges.PostMemeRequest;
@@ -32,9 +33,13 @@ public class MemeServiceImpl implements MemeService {
   }
 
   @Override
-  public PostMemeResponse postMeme(PostMemeRequest postMemeRequest, LocalDateTime dateTime) {
+  public PostMemeResponse postMeme(PostMemeRequest postMemeRequest, LocalDateTime dateTime) 
+      throws DublicateMemeException {
     UUID id = UUID.randomUUID();
     Meme meme = modelMapper.map(postMemeRequest, Meme.class);
+    if (repositoryService.memeExists(meme)) {
+      throw new DublicateMemeException("meme already exists");
+    }
     meme.setMemeId(id.toString());
     meme.setDateTime(dateTime);
     repositoryService.saveMeme(meme);
@@ -53,12 +58,11 @@ public class MemeServiceImpl implements MemeService {
   }
 
   @Override
-  public GetMemeResponse getMemeById(String id) {
+  public GetMemeResponse getMemeById(String id) throws MemeNotFoundException {
     Meme meme = repositoryService.getMemeById(id);
     if (meme == null) {
       throw new MemeNotFoundException(
-          "repositoryService layer couldn't find the meme corresponding to given id",
-          new RuntimeException());
+          "repositoryService layer couldn't find the meme corresponding to given id");
     }
     GetMemeResponse memeResponse = modelMapper.map(meme, GetMemeResponse.class);
     return memeResponse;

@@ -1,5 +1,6 @@
 package com.crio.starter.controller;
 
+import com.crio.starter.exceptions.DublicateMemeException;
 import com.crio.starter.exceptions.MemeNotFoundException;
 import com.crio.starter.exchanges.GetMemeResponse;
 import com.crio.starter.exchanges.PostMemeRequest;
@@ -9,7 +10,6 @@ import com.crio.starter.service.MemeService;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,14 +24,16 @@ public class MemeController {
 
   private final MemeService memeService;
   private final int memeCnt = 100;
-
-  /**Post a meme.
+  /** Endpoint to post meme.
    * 
-   * @param postMemeRequest The request object
-   * @return
+   * @param postMemeRequest request
+   * @return postMemeResponse response
+   * @throws DublicateMemeException exception on dublicate post request
    */
+  
   @PostMapping("/memes")
-  public PostMemeResponse postMeme(@RequestBody PostMemeRequest postMemeRequest) {
+  public PostMemeResponse postMeme(@RequestBody PostMemeRequest postMemeRequest) 
+      throws DublicateMemeException {
     if (postMemeRequest.getName() == null 
         || postMemeRequest.getUrl() == null
         || postMemeRequest.getCaption() == null) {
@@ -47,19 +49,24 @@ public class MemeController {
   }
 
   @GetMapping("/memes/{id}")
-  public GetMemeResponse getMemeById(@PathVariable String id) {
+  public GetMemeResponse getMemeById(@PathVariable String id) throws MemeNotFoundException {
     return memeService.getMemeById(id);
   }
   
   @ExceptionHandler(IllegalArgumentException.class)
-  ResponseEntity<String> onIncorrectParameterException(IllegalArgumentException ex){
+  ResponseEntity<String> onIllegalArgumentException(IllegalArgumentException ex) {
     return ResponseEntity.badRequest().body(
       "invalid request: some parameters are missing in the post request\n");
   }
 
   @ExceptionHandler(MemeNotFoundException.class)
-  ResponseEntity<String> onIncorrectParameterException(MemeNotFoundException ex){
+  ResponseEntity<String> onMemeNotFoundException(MemeNotFoundException ex) {
     return ResponseEntity.notFound().build();
+  }
+
+  @ExceptionHandler(DublicateMemeException.class)
+  ResponseEntity<String> onDublicateMemeException(DublicateMemeException ex) {
+    return ResponseEntity.status(409).body("dublicate post request");
   }
 
 }

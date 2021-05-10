@@ -5,10 +5,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.crio.starter.App;
+import com.crio.starter.exceptions.DublicateMemeException;
 import com.crio.starter.exceptions.MemeNotFoundException;
 import com.crio.starter.exchanges.GetMemeResponse;
 import com.crio.starter.exchanges.PostMemeRequest;
@@ -25,7 +27,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -80,7 +81,6 @@ class MemeControllerTest {
 
   @Test
   void postMemeTestWitMissingName() throws Exception {
-    //TODO: 
     //given
     PostMemeRequest memeRequest = new PostMemeRequest(null,new URL("http://falcon.com/img1"),"here is the pain");
 
@@ -96,6 +96,25 @@ class MemeControllerTest {
     //then
     int responseStatus = response.getStatus();
     assertEquals(400, responseStatus);
+  }
+
+  @Test
+  void postDublicateMeme() throws Exception {
+    //given
+    PostMemeRequest memeRequest = new PostMemeRequest("ram",new URL("http://falcon.com/img1"),"here is the pain");
+    Mockito.doThrow(DublicateMemeException.class).when(memeService)
+        .postMeme(eq(memeRequest), any(LocalDateTime.class));
+    // when
+
+    MockHttpServletResponse response = mvc
+        .perform(
+        post("/memes").contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(memeRequest)))
+        .andReturn().getResponse();
+
+    //then
+    int responseStatus = response.getStatus();
+    assertEquals(409, responseStatus);
   }
 
   @Test

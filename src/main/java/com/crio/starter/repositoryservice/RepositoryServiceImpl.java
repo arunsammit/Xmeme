@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -36,14 +37,27 @@ public class RepositoryServiceImpl implements RepositoryService {
   }
 
   @Override
-  public Meme getMemeById(String id) {
+  public Meme getMemeById(String id) throws MemeNotFoundException {
     MemeEntity memeEntity = 
         memeRepository.findOneByMemeId(id);
     if (memeEntity == null) {
-      throw new MemeNotFoundException("id is not valid",new IllegalArgumentException());
+      throw new MemeNotFoundException("id is not valid");
     }
     Meme meme = modelMapper.map(memeEntity, Meme.class);
     return meme;
+  }
+
+  @Override
+  public Boolean memeExists(Meme meme) {
+    MemeEntity entity = new MemeEntity(null,
+        meme.getMemeId(),
+        meme.getName(),
+        meme.getUrl(),
+        meme.getCaption(),
+        meme.getDateTime());
+    Example<MemeEntity> example = Example.of(entity);
+    Boolean exists = memeRepository.exists(example);
+    return exists;
   }
     
 }
