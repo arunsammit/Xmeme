@@ -125,7 +125,6 @@ class MemeServiceTest {
 
   @Test
   void getMemeByIdOnNullResponse() throws MemeNotFoundException {
-    //TODO
     //given 
     Mockito.doReturn(null).when(repositoryService).getMemeById(anyString());
     //when

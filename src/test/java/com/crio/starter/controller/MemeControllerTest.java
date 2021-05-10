@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -150,8 +151,24 @@ class MemeControllerTest {
   }
 
   @Test
-  void getMemeByIdTest() {
-    //TODO: Implement this test
+  void getMemeByIdTest() throws Exception {
+    //given
+    UUID id = UUID.randomUUID();
+    GetMemeResponse expected = new GetMemeResponse(id.toString(),"madan",
+        "http://flt.falt/p.jpg",
+        "he he he");
+    Mockito.doReturn(expected)
+        .when(memeService).getMemeById(id.toString());
+    //when
+    MockHttpServletResponse mockHttpServletResponse = mvc
+        .perform(
+        get("/memes/" + id.toString())
+        .accept(MediaType.APPLICATION_JSON)
+        ).andReturn().getResponse();
+    //then
+    String response = mockHttpServletResponse.getContentAsString();
+    GetMemeResponse actual = objectMapper.readValue(response, GetMemeResponse.class);
+    assertEquals(expected, actual);
   }
 
   List<GetMemeResponse> loadMemesResponse() throws IOException {
