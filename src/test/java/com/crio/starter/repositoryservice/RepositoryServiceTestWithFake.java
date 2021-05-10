@@ -2,10 +2,12 @@ package com.crio.starter.repositoryservice;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
 import com.crio.starter.App;
 import com.crio.starter.data.MemeEntity;
+import com.crio.starter.exceptions.MemeNotFoundException;
 import com.crio.starter.model.Meme;
 import com.crio.starter.repository.MemeRepository;
 import com.crio.starter.utils.FixtureHelpers;
@@ -40,7 +42,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(classes = {App.class})
 @DirtiesContext
 @ActiveProfiles("test")
-public class RepositoryServiceTest {
+public class RepositoryServiceTestWithFake {
   private static final String FIXTURES = "fixtures/exchanges";
   @Autowired
   private RepositoryService repositoryService;
@@ -56,6 +58,7 @@ public class RepositoryServiceTest {
   @BeforeEach
   void setup() throws IOException {
     List<MemeEntity> entities = listOfMemeEntity();
+    Collections.shuffle(entities);
     entities.forEach(x -> mongoTemplate.save(x));
   }
 
@@ -68,12 +71,6 @@ public class RepositoryServiceTest {
     String fixture =
         FixtureHelpers.fixture(FIXTURES + "/initial_list_of_meme_entity.json");
     return objectMapper.readValue(fixture, new TypeReference<List<MemeEntity>>(){});
-  }
-
-  private List<Meme> listOfMeme() throws IOException {
-    String fixture =
-        FixtureHelpers.fixture(FIXTURES + "/meme_list.json");
-    return objectMapper.readValue(fixture, new TypeReference<List<Meme>>(){});
   }
 
   @Test
@@ -89,26 +86,11 @@ public class RepositoryServiceTest {
   }
 
   @Test
-  void saveMemeTest() throws IOException {
-    //TODO: implement test for saveMeme method
-    //given
-    UUID id = UUID.randomUUID();
-    Meme expected = new Meme(id.toString(),"madan",
-        "http://flt.falt/p.jpg",
-        "he he he", 
-        LocalDateTime.of(1800, 11, 13, 12, 00, 00));
-    //when
-    repositoryService.saveMeme(expected);
-    //then
-    MemeEntity actual = memeRepository.findOneByMemeId(id.toString());
-    assertEquals(expected.getMemeId(),actual.getMemeId());
-    assertEquals(expected.getName(),actual.getName());
-    assertEquals(expected.getUrl(),actual.getUrl());
-    assertEquals(expected.getCaption(),actual.getCaption());
-    assertEquals(expected.getDateTime(),actual.getDateTime());
+  void getMemeByIdOnIncorrectIdTest() {
+    memeRepository.deleteOneByMemeId("0");
+    assertThrows(MemeNotFoundException.class, () -> 
+        repositoryService.getMemeById("0"));
   }
-  
-  void getMemeByIdTest() {
-    //TODO: implement test for getMemeById method
-  }
+
+
 }

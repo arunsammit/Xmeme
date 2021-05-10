@@ -11,11 +11,8 @@ import lombok.NonNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostMemeRequest {
-  @NonNull
   private String name;
-  @NonNull
   private URL url;
-  @NonNull
   private String caption;
 
   public String getUrl() {

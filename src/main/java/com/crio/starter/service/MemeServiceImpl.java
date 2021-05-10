@@ -1,5 +1,6 @@
 package com.crio.starter.service;
 
+import com.crio.starter.exceptions.MemeNotFoundException;
 import com.crio.starter.exchanges.GetMemeResponse;
 import com.crio.starter.exchanges.PostMemeRequest;
 import com.crio.starter.exchanges.PostMemeResponse;
@@ -54,6 +55,11 @@ public class MemeServiceImpl implements MemeService {
   @Override
   public GetMemeResponse getMemeById(String id) {
     Meme meme = repositoryService.getMemeById(id);
+    if (meme == null) {
+      throw new MemeNotFoundException(
+          "repositoryService layer couldn't find the meme corresponding to given id",
+          new RuntimeException());
+    }
     GetMemeResponse memeResponse = modelMapper.map(meme, GetMemeResponse.class);
     return memeResponse;
   }

@@ -1,9 +1,12 @@
 package com.crio.starter.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 
+import com.crio.starter.exceptions.MemeNotFoundException;
 import com.crio.starter.exchanges.GetMemeResponse;
 import com.crio.starter.exchanges.PostMemeRequest;
 import com.crio.starter.exchanges.PostMemeResponse;
@@ -17,7 +20,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -52,8 +58,8 @@ class MemeServiceTest {
     final PostMemeResponse memeResponse = memeService.postMeme(memeRequest,dateTime);
     verify(repositoryService).saveMeme(valueCapture.capture());
     Meme meme = valueCapture.getValue();
-    //Then
     final PostMemeResponse expected = new PostMemeResponse(meme.getMemeId());
+    //Then
     assertEquals(name, meme.getName());
     assertEquals(url.toString(), meme.getUrl());
     assertEquals(caption, meme.getCaption());
@@ -76,8 +82,37 @@ class MemeServiceTest {
     assertEquals(expected, response);
   }
 
+  @Test
   void getMemeByIdTest() {
-    //TODO: implement test for getMemeById
+    //given
+    UUID id = UUID.randomUUID();
+    Meme expected = new Meme(id.toString(),"madan",
+        "http://flt.falt/p.jpg",
+        "he he he", 
+        LocalDateTime.of(1800, 11, 13, 12, 00, 00));
+    Mockito.doReturn(expected).when(repositoryService).getMemeById(id.toString());
+    //when
+    GetMemeResponse actual = 
+        memeService.getMemeById(id.toString());
+    //then
+    assertEquals(expected.getMemeId(), actual.getId());
+    assertEquals(expected.getName(), actual.getName());
+    assertEquals(expected.getUrl(), actual.getUrl());
+    assertEquals(expected.getCaption(), actual.getCaption());
+
+
+  }
+
+  @Test
+  void getMemeByIdOnNullResponse() {
+    //TODO
+    //given 
+    Mockito.doReturn(null).when(repositoryService).getMemeById(anyString());
+    //when
+    Executable ex = () -> memeService.getMemeById("invalid_id");
+    //then
+    assertThrows(MemeNotFoundException.class, ex);
+
   }
 
   private List<Meme> listOfMeme() throws IOException {

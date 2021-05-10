@@ -1,6 +1,7 @@
 package com.crio.starter.repositoryservice;
 
 import com.crio.starter.data.MemeEntity;
+import com.crio.starter.exceptions.MemeNotFoundException;
 import com.crio.starter.model.Meme;
 import com.crio.starter.repository.MemeRepository;
 import java.util.List;
@@ -38,6 +39,9 @@ public class RepositoryServiceImpl implements RepositoryService {
   public Meme getMemeById(String id) {
     MemeEntity memeEntity = 
         memeRepository.findOneByMemeId(id);
+    if (memeEntity == null) {
+      throw new MemeNotFoundException("id is not valid",new IllegalArgumentException());
+    }
     Meme meme = modelMapper.map(memeEntity, Meme.class);
     return meme;
   }

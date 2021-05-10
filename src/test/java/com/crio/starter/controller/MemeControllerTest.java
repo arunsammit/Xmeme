@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.crio.starter.App;
+import com.crio.starter.exceptions.MemeNotFoundException;
 import com.crio.starter.exchanges.GetMemeResponse;
 import com.crio.starter.exchanges.PostMemeRequest;
 import com.crio.starter.exchanges.PostMemeResponse;
@@ -23,6 +25,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -76,6 +79,26 @@ class MemeControllerTest {
   }
 
   @Test
+  void postMemeTestWitMissingName() throws Exception {
+    //TODO: 
+    //given
+    PostMemeRequest memeRequest = new PostMemeRequest(null,new URL("http://falcon.com/img1"),"here is the pain");
+
+    // when
+
+    MockHttpServletResponse response = mvc
+        .perform(
+        post("/memes").contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(memeRequest)))
+        .andReturn().getResponse();
+
+    verifyNoMoreInteractions(memeService);
+    //then
+    int responseStatus = response.getStatus();
+    assertEquals(400, responseStatus);
+  }
+
+  @Test
   void getMemesTest() throws Exception {
     //given
     Mockito.doReturn(loadMemesResponse())
@@ -91,6 +114,20 @@ class MemeControllerTest {
         objectMapper.readValue(responseStr, new TypeReference<List<GetMemeResponse>>(){});
     assertEquals(loadMemesResponse(), responseDto);
     Mockito.verify(memeService).getLatestMemes(100);
+  }
+
+  @Test
+  void getMemeByIdOnInvalidIdTest() throws Exception {
+    //given 
+    Mockito.doThrow(MemeNotFoundException.class).when(memeService).getMemeById("invalid_id");
+    //when
+    MockHttpServletResponse mockHttpServletResponse = mvc
+        .perform(
+        get("/memes/invalid_id").accept(MediaType.APPLICATION_JSON)
+        ).andReturn().getResponse();
+    //then
+    int responseCode = mockHttpServletResponse.getStatus();
+    assertEquals(404, responseCode);
   }
 
   @Test
